@@ -15,6 +15,7 @@ import java.lang.Math;
 
 public class GameScreen extends Application {
 	public static Group MainGrid;
+	private Object [][] Screen= new Object[5][9];
 	private static Image magnetImage= new Image("/magnetism.png");
 	private static Random randomiser= new Random();
 	private static Image shieldImage= new Image("/shield.png");
@@ -33,36 +34,55 @@ public class GameScreen extends Application {
 //		MainGrid.setPrefTileWidth(50);
 		//MainGrid.getChildren().addAll(StartNew, Resume, Leader);
 		
-		ScreenElements Screen= new ScreenElements();
 //		Coin C= new Coin(1,1, Screen); GameScreen.DrawCoin(C);
 //		Magnet M= new Magnet(2,3, Screen); GameScreen.DrawMagnet(M);
 //		Shield S= new Shield(5,9, Screen); GameScreen.DrawShield(S);
 		int freqMagnet=randomiser.nextInt(2);
 		int freqShield=randomiser.nextInt(2);
+		int freqCoin=randomiser.nextInt(2);
+		int blockRow=randomiser.nextInt(6)+1;
 		int freqBall=2+Math.max(freqMagnet, freqShield);
 		
-		Block B= new Block(1,1, Screen); 
-		GameScreen.DrawBlock(B);
+		for (int i=0;i<5;i++) {
+			Block B= new Block(i+1,blockRow, Screen); 
+			GameScreen.DrawBlock(B);
+			Screen[i][blockRow-1]=B;
+		}
 		
 		for (int i=0;i<freqMagnet;i++) {
 			int row=randomiser.nextInt(5)+1;
 			int column=randomiser.nextInt(9)+1;
+			if (Screen[row-1][column-1]!=null) {
+				i--;
+				continue;
+			}
 			Magnet M= new Magnet(row,column, Screen); 
 			GameScreen.DrawMagnet(M);
+			Screen[row-1][column-1]=M;
 		}
 		
 		for (int i=0;i<freqShield;i++) {
 			int row=randomiser.nextInt(5)+1;
 			int column=randomiser.nextInt(9)+1;
+			if (Screen[row-1][column-1]!=null) {
+				i--;
+				continue;
+			}
 			Shield S= new Shield(row,column, Screen); 
 			GameScreen.DrawShield(S);
+			Screen[row-1][column-1]=S;
 		}
 		
-		for (int i=0;i<freqBall;i++) {
+		for (int i=0;i<freqCoin;i++) {
 			int row=randomiser.nextInt(5)+1;
 			int column=randomiser.nextInt(9)+1;
+			if (Screen[row-1][column-1]!=null) {
+				i--;
+				continue;
+			}
 			Coin C= new Coin(row,column, Screen); 
 			GameScreen.DrawCoin(C);
+			Screen[row-1][column-1]=C;
 		}
 		
 		Scene EntryScene= new Scene(MainGrid, 350, 630);
@@ -104,9 +124,9 @@ public class GameScreen extends Application {
 	
 	public static void DrawBlock(Block B) {
 		
-		int upperleftx=(B.GetPosition().Getx()-1)*70;
+		int upperleftx=(B.GetPosition().Getx()-1)*70+2;
 		int upperlefty=(B.GetPosition().Gety()-1)*70;
-		Rectangle BlockSquare= new Rectangle(upperleftx,upperlefty,70,70);
+		Rectangle BlockSquare= new Rectangle(upperleftx,upperlefty,69,69);
 		BlockSquare.setFill(Color.BLUE);
 		BlockSquare.setArcHeight(15);
 		BlockSquare.setArcWidth(15);
