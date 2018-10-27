@@ -32,7 +32,9 @@ public class Token {
 		this.Position=new Point(a,b);
 		this.Enable=e;
 		this.Value=v;
-		Screen.Add(this);
+//		if (this instanceof Block)
+//			return;
+//		Screen.Add(this);
 	}
 
 }
