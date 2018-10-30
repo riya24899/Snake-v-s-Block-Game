@@ -1,7 +1,6 @@
-public class Token {
+public class Obstruction {
 
 	protected Point Position;
-	protected int Value;
 	protected boolean Enable;
 	
 	public void SetPosition(Point P) {
@@ -20,18 +19,9 @@ public class Token {
 		return this.Enable;
 	}
 	
-	public void SetValue(int V) {
-		this.Value=V;
-	}
-	
-	public int GetValue() {
-		return this.Value;
-	}
-	
-	public Token(int a, int b, Object[][] Screen, boolean e, int v) {
+	public Obstruction(int a, int b, Object[][] Screen, boolean e) {
 		this.Position=new Point(a,b);
 		this.Enable=e;
-		this.Value=v;
 	}
 
 }
