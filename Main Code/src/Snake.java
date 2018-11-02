@@ -1,12 +1,19 @@
-import java.util.Date;
+import java.util.ArrayList;
+import java.io.*;
+import javafx.scene.shape.Circle;
+import javafx.util.Duration;
+import javafx.animation.TranslateTransition;
 
-public class Snake extends Player{
+
+public class Snake implements Serializable {
 	
-private int Length;
- private int Speed;
- private int Score;
- private int HeadPosition;
- private boolean IsAlive;
+	private static final long serialVersionUID = 376L;
+    private int Length;
+    private int Speed;
+    private int Score;
+    private ArrayList<Circle> SnakeBody= new ArrayList<Circle>();
+    private Point HeadPosition;
+    private boolean IsAlive;
  
  public void SetLength(int L) {
 	 this.Length=L;
@@ -32,11 +39,11 @@ private int Length;
 	 return this.Score;
  }
  
- public void SetHead(int P) {
+ public void SetHead(Point P) {
 	 this.HeadPosition=P;
  }
  
- public int GetHead() {
+ public Point GetHead() {
 	 return this.HeadPosition;
  }
  
@@ -48,12 +55,51 @@ private int Length;
 	 return this.IsAlive;
  }
  
- Snake(int S, Date D, Snake CS) {
-		super(S, D, CS);
-	}
+ public void SetBody(ArrayList<Circle> C) {
+	 this.SnakeBody=C;
+ }
+ 
+ public ArrayList<Circle> GetBody() {
+	 return this.SnakeBody;
+ }
+ 
+ public void moveSnake(int dir) {
+	 
+		if (dir==1) {
+		for (int i=0; i<=this.GetLength(); i++) {
+	
+	        TranslateTransition tt= new TranslateTransition(Duration.millis(5),this.SnakeBody.get(i));
+	        if(this.SnakeBody.get(i).getCenterX()!=105) {
+			tt.setFromX(this.SnakeBody.get(i).getCenterX()-175);
+			tt.setToX(this.SnakeBody.get(i).getCenterX()-176);
+			tt.setCycleCount(1);
+			tt.setAutoReverse(false);
+			tt.play();
+			this.SnakeBody.get(i).setCenterX(this.SnakeBody.get(i).getCenterX()-1);
+	        }
+		}
+
+		}
+		else if (dir==2) {
+			for (int i=0; i<=this.GetLength(); i++) {
+				
+		        TranslateTransition tt= new TranslateTransition(Duration.millis(5),this.SnakeBody.get(i));
+		        if(this.SnakeBody.get(i).getCenterX()!=245) {
+				tt.setFromX(this.SnakeBody.get(i).getCenterX()-175);
+				tt.setToX(this.SnakeBody.get(i).getCenterX()-174);
+				tt.setCycleCount(1);
+				tt.setAutoReverse(false);
+				tt.play();
+				this.SnakeBody.get(i).setCenterX(this.SnakeBody.get(i).getCenterX()+1);
+		        }
+			}
+
+			}
+		
+ }
  
  Snake() {
-	 super();
- }
+		this.HeadPosition= new Point(3,6);
+	}
 
 }

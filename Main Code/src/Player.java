@@ -1,6 +1,7 @@
 import java.util.Date;
+import java.io.*;
 
-public class Player {
+public class Player implements Serializable {
 	
 	protected int Score;
 	protected Date CurrDate;
@@ -34,9 +35,5 @@ public class Player {
 		 this.CurrDate=D;
 		 this.CurrSnake=CS;
 	 }
-     
-     Player(){
-    	 
-     }
 	 
 }
