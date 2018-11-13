@@ -1,8 +1,7 @@
 import java.util.ArrayList;
 import java.io.*;
 import javafx.scene.shape.Circle;
-import javafx.util.Duration;
-import javafx.animation.TranslateTransition;
+
 
 
 public class Snake implements Serializable {
@@ -67,34 +66,19 @@ public class Snake implements Serializable {
 	 
 		if (dir==1) {
 		for (int i=0; i<=this.GetLength(); i++) {
-	
-	        TranslateTransition tt= new TranslateTransition(Duration.millis(5),this.SnakeBody.get(i));
-	        if(this.SnakeBody.get(i).getCenterX()!=105) {
-			tt.setFromX(this.SnakeBody.get(i).getCenterX()-175);
-			tt.setToX(this.SnakeBody.get(i).getCenterX()-176);
-			tt.setCycleCount(1);
-			tt.setAutoReverse(false);
-			tt.play();
-			this.SnakeBody.get(i).setCenterX(this.SnakeBody.get(i).getCenterX()-1);
+	        if(this.SnakeBody.get(i).getCenterX()>15) {
+	        	this.SnakeBody.get(i).setCenterX(this.SnakeBody.get(i).getCenterX()-10);
 	        }
 		}
 
 		}
 		else if (dir==2) {
 			for (int i=0; i<=this.GetLength(); i++) {
-				
-		        TranslateTransition tt= new TranslateTransition(Duration.millis(5),this.SnakeBody.get(i));
-		        if(this.SnakeBody.get(i).getCenterX()!=245) {
-				tt.setFromX(this.SnakeBody.get(i).getCenterX()-175);
-				tt.setToX(this.SnakeBody.get(i).getCenterX()-174);
-				tt.setCycleCount(1);
-				tt.setAutoReverse(false);
-				tt.play();
-				this.SnakeBody.get(i).setCenterX(this.SnakeBody.get(i).getCenterX()+1);
+		        if(this.SnakeBody.get(i).getCenterX()<345) {
+		        	this.SnakeBody.get(i).setCenterX(this.SnakeBody.get(i).getCenterX()+10);
 		        }
 			}
-
-			}
+		}	
 		
  }
  

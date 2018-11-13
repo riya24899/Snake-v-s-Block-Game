@@ -3,6 +3,7 @@ import java.io.*;
 
 public class Player implements Serializable {
 	
+	private static final long serialVersionUID = 527L;
 	protected int Score;
 	protected Date CurrDate;
 	protected Snake CurrSnake;

@@ -1,8 +1,11 @@
+import java.io.IOException;
+
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import javafx.scene.layout.VBox;
 import javafx.geometry.Pos;
@@ -10,6 +13,8 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.geometry.Insets;
+import javafx.event.EventHandler;
+import javafx.event.ActionEvent;
 
 
 public class EntryScreen extends Application {
@@ -32,7 +37,10 @@ public class EntryScreen extends Application {
 		StartNew.setStyle("-fx-background-color: #2e2759; -fx-font-size: 3em; ");
 		StartNew.setTextFill(Color.WHITE);
 		StartNew.setPrefWidth(330);
-		//StartNew.getOnMouseClicked()
+		StartNew.setOnAction( e -> {
+			Board B= new Board();
+			B.start(primaryStage);
+	    });
 
 		Button Resume= new Button("RESUME");
 		Resume.setStyle("-fx-background-color: #2e2759; -fx-font-size: 3em; ");
@@ -43,6 +51,15 @@ public class EntryScreen extends Application {
 		Leader.setStyle("-fx-background-color: #2e2759; -fx-font-size: 3em; ");
 		Leader.setTextFill(Color.WHITE);
 		Leader.setPrefWidth(330);
+		Leader.setOnAction( e -> {
+			LeaderBoard L= new LeaderBoard();
+			try {
+				L.start(primaryStage);
+			} catch (ClassNotFoundException | IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+	    });
 
 		
 		VBox VerticalPane= new VBox();

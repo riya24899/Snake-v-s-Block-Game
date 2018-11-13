@@ -19,7 +19,7 @@ public class Obstruction {
 		return this.Enable;
 	}
 	
-	public Obstruction(int a, int b, Object[][] Screen, boolean e) {
+	public Obstruction(int a, int b, boolean e) {
 		this.Position=new Point(a,b);
 		this.Enable=e;
 	}

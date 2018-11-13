@@ -28,7 +28,7 @@ public class Token {
 		return this.Value;
 	}
 	
-	public Token(int a, int b, Object[][] Screen, boolean e, int v) {
+	public Token(int a, int b, boolean e, int v) {
 		this.Position=new Point(a,b);
 		this.Enable=e;
 		this.Value=v;

@@ -1,13 +1,11 @@
 import javafx.scene.shape.Circle;
 
-public class Shield extends Token{
-	
+public class DestroyBlock extends Token{
+	private Circle DesCircle;
 	private int Time =5;
-	private Circle ShieldCircle;
-	
-	public Shield (int a, int b, Circle S) {
+	public DestroyBlock (int a, int b, Circle C) {
 		super(a,b,true,0);
-		this.ShieldCircle=S;
+		this.DesCircle= C;
 	}
 	
 	public void setTime(int t) {
@@ -19,11 +17,11 @@ public class Shield extends Token{
 	}
 	
 	public void SetCircle(Circle C) {
-		this.ShieldCircle= C;
+		this.DesCircle= C;
 	}
 
 	public Circle GetCircle() {
-		return this.ShieldCircle;
+		return this.DesCircle;
 	}
 
 }
