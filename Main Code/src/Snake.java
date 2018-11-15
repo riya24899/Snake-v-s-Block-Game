@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.io.*;
+
+import javafx.scene.Group;
 import javafx.scene.shape.Circle;
 
 
@@ -24,6 +26,12 @@ public class Snake implements Serializable {
  
  public void SetSpeed(int S) {
 	 this.Speed=S;
+ }
+ 
+ public void disableSnake(Group MainGrid) {
+	 for (int i=0; i<SnakeBody.size();i++) {
+		 MainGrid.getChildren().remove(SnakeBody.get(i));
+	 }
  }
  
  public int GetSpeed() {
@@ -61,6 +69,7 @@ public class Snake implements Serializable {
  public ArrayList<Circle> GetBody() {
 	 return this.SnakeBody;
  }
+ 
  
  public void moveSnake(int dir) {
 	 

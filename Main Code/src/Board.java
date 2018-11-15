@@ -1,9 +1,11 @@
 import javafx.application.Application;
 import javafx.animation.AnimationTimer;
+import javafx.animation.PauseTransition;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import java.util.ArrayList;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import javafx.scene.layout.StackPane;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
@@ -22,16 +24,18 @@ import javafx.scene.text.*;
 public class Board extends Application {
 	public static Group MainGrid;
 	private static Object [][] Screen= new Object[5][9];
-	private static int Time=-1; 
+	private static double Time=-1; 
 	private static int count=0;
-	private static boolean flag=false;
+	private static Label Score;
 	private static ArrayList<Object> ScreenElements=new ArrayList<Object>(); 
+	private static ArrayList<Object> deletionArray=new ArrayList<Object>();
 	private static Image magnetImage= new Image("/magnetism.png");
 	private static Image coinImage= new Image("/coin.png");
 	private static Random randomiser= new Random();
 	private static Image shieldImage= new Image("/shield.png");
 	private static Image DestroyBlockImage= new Image("/bomb.png");
 	private static ComboBox PauseOptions= new ComboBox();
+	private static double BoardSpeed;
 	private static Player player=new Player(0, new Date(), new Snake());
 	
 	
@@ -40,8 +44,8 @@ public class Board extends Application {
 		MainGrid= new Group();
 		Snake Snake1= player.GetSnake();
 		Snake1.SetLength(4);
-		Board.DrawSnake(Snake1);
-		Label Score= new Label(Integer.toString(player.GetScore()));
+		Board.DrawSnake(175, 560, Snake1);
+		Score= new Label(Integer.toString(player.GetScore()));
 		Score.setTextFill(Color.WHITE);
 		Score.setStyle("-fx-font-size: 1.65em; ");
 		Score.setLayoutX(300);
@@ -87,36 +91,185 @@ public class Board extends Application {
 	    });
 		
 		
+		BoardSpeed=1.75; 	
 		
 		AnimationTimer main= new AnimationTimer() {
 			@Override
 			public void handle(long now) {
-				Time++;
-				if(Time%50==0 ) {
-					Time%=50;
+				
+				boolean flag=true;
+				clearBoard();
+				flag=checkCollision();
+				if (flag) {
+					Time++;
+					}
+				double divisor= 70/BoardSpeed;
+				if(Math.floor(Time%divisor)==0 ) {
+				Time=Math.floor(Time%divisor);
 				Board.DrawRow(MainGrid);
 				System.out.println(ScreenElements.size());
-//				if(count<11)
-//					count++;
+					
 				}
-				
-//				if(count==11)
-//					flag=true;
-				
-//				if(flag && Time%50==0 ) {
-//					
-//					for (int t=0;t<=4;t++)
-//					ScreenElements.remove(t);
-//				}
+				if (flag) {
 				moveBoard();
+				}
 			}
 		};
 		main.start();
 
-		
-			
 	}
 	
+	
+	public static void clearBoard() {
+		for (int i=0; i<ScreenElements.size();i++) {
+			Object o= ScreenElements.get(i);
+			if(o instanceof Block) {
+				
+				Block B= (Block)o;
+				if (B.GetRec().getLayoutY()>=660) {
+					B.SetEnable(false);
+					deletionArray.add(B);
+						}
+				}
+				else if(o instanceof Wall) {
+					Wall W= (Wall)o;
+					if (W.GetRec().getLayoutY()>=660) {
+						W.SetEnable(false);
+						deletionArray.add(W);
+						
+						}
+				}	
+				else if(o instanceof Ball) {
+					Ball B1= (Ball)o;
+					if (B1.GetCircle().getLayoutY()>=665) {
+						B1.SetEnable(false);
+						deletionArray.add(B1);
+				}
+				else if(o instanceof Magnet) {
+					Magnet M= (Magnet)o;
+					if (M.GetCircle().getLayoutY()>=665) {
+						M.SetEnable(false);
+						deletionArray.add(M);
+					}
+				}
+				else if(o instanceof Shield) {
+						Shield S= (Shield)o;
+						if (S.GetCircle().getLayoutY()>=665) {
+							S.SetEnable(false);
+							deletionArray.add(S);
+					}				
+				}	
+						
+				else if(o instanceof DestroyBlock) {
+						DestroyBlock D= (DestroyBlock)o;
+						if (D.GetCircle().getLayoutY()>=665) {
+							D.SetEnable(false);
+							deletionArray.add(D);
+					}			
+				}
+					
+				else if(o instanceof Coin) {
+						Coin C= (Coin)o;
+						if (C.GetCircle().getLayoutY()>=665) {
+							C.SetEnable(false);
+							deletionArray.add(C);
+					}
+				}	
+			}
+		}
+		ScreenElements.removeAll(deletionArray);
+		deletionArray.clear();
+		
+	}
+	
+	public static boolean checkCollision() {
+		boolean flag=true;
+		for (int i=0;i<ScreenElements.size();i++) {
+			if(ScreenElements.get(i) instanceof Token) {
+				if(ScreenElements.get(i) instanceof Ball) {
+					Ball B=(Ball)ScreenElements.get(i);
+					Circle C=B.GetCircle();
+					if (C.intersects(C.sceneToLocal(player.GetSnake().GetBody().get(0).localToScene(player.GetSnake().GetBody().get(0).getBoundsInLocal())))) {
+						int v=B.GetValue();
+						MainGrid.getChildren().remove(B.GetText());
+						MainGrid.getChildren().remove(B.GetCircle());
+						Snake S= player.GetSnake();
+						S.disableSnake(MainGrid);
+						S.SetLength(S.GetLength()+v);
+						double newy= S.GetBody().get(0).getCenterY()-(v*16);
+						DrawSnake(S.GetBody().get(0).getCenterX(),newy,S);
+						BoardSpeed*=1+0.05*v;
+					}
+				
+				}
+				
+				if(ScreenElements.get(i) instanceof DestroyBlock) {
+					DestroyBlock D =(DestroyBlock)ScreenElements.get(i);
+					Circle C=D.GetCircle();
+					if (C.intersects(C.sceneToLocal(player.GetSnake().GetBody().get(0).localToScene(player.GetSnake().GetBody().get(0).getBoundsInLocal())))) {
+						MainGrid.getChildren().remove(D.GetCircle());
+						for (int y=0;y<ScreenElements.size();y++) {
+							if(ScreenElements.get(y) instanceof Block) {
+						
+							Block B =(Block)ScreenElements.get(y);
+							Rectangle R=B.GetRec();
+							MainGrid.getChildren().remove(B.GetRec());
+							MainGrid.getChildren().remove(B.GetText());
+							ScreenElements.remove(B);
+							player.SetScore(player.GetScore()+B.getValue());
+							Score.setText(Integer.toString(player.GetScore()));
+							//Add animation
+							}
+						}	
+						//
+						//
+						//Destroy all blocks on screen 
+						//
+						//
+					}
+				
+				}
+				
+				
+			}
+			
+			if(ScreenElements.get(i) instanceof Obstruction) {
+				if(ScreenElements.get(i) instanceof Block) {
+					Block B =(Block)ScreenElements.get(i);
+					Rectangle R=B.GetRec();
+					if (R.intersects(R.sceneToLocal(player.GetSnake().GetBody().get(0).localToScene(player.GetSnake().GetBody().get(0).getBoundsInLocal())))) {
+						if (B.getValue()<=5) {
+							MainGrid.getChildren().remove(B.GetRec());
+							MainGrid.getChildren().remove(B.GetText());
+							ScreenElements.remove(B);
+							player.SetScore(player.GetScore()+B.getValue());
+							Score.setText(Integer.toString(player.GetScore()));
+						}
+						else {
+							B.GetText().setText(Integer.toString(B.getValue()-1));
+							B.setValue(B.getValue()-1);
+							//give pause
+							PauseTransition p = new PauseTransition(Duration.seconds(2));
+							p.play();
+							flag=false;
+							player.SetScore(player.GetScore()+1);
+							Score.setText(Integer.toString(player.GetScore()));
+						}
+						
+						
+						//
+						//
+						//Animation 
+						//
+						//
+					}
+				
+				}
+			}
+			
+		}
+		return flag;
+	}
 	
 	
 public static void moveBoard() {
@@ -124,49 +277,49 @@ public static void moveBoard() {
 		
 			for (int j=0;j<ScreenElements.size();j++) {
 				
-				double s=1.5;
+				if (ScreenElements.get(j)!=null) {
 
 			       if (ScreenElements.get(j) instanceof Ball) {
 			    	   Ball B= (Ball) ScreenElements.get(j);
-			    	   B.GetCircle().setLayoutY(B.GetCircle().getLayoutY()+s);
-			    	   B.GetText().setLayoutY(B.GetText().getLayoutY()+s);
+			    	   B.GetCircle().setLayoutY(B.GetCircle().getLayoutY()+BoardSpeed);
+			    	   B.GetText().setLayoutY(B.GetText().getLayoutY()+BoardSpeed);
 			    }
 			       else if (ScreenElements.get(j) instanceof Block) {
 			    	   Block B= (Block) ScreenElements.get(j);
-			    	   B.GetRec().setLayoutY(B.GetRec().getLayoutY()+s);
-			    	   B.GetText().setLayoutY(B.GetText().getLayoutY()+s);
+			    	   B.GetRec().setLayoutY(B.GetRec().getLayoutY()+BoardSpeed);
+			    	   B.GetText().setLayoutY(B.GetText().getLayoutY()+BoardSpeed);
 			    }
 			       else if (ScreenElements.get(j) instanceof Coin) {
 			    	   Coin C= (Coin) ScreenElements.get(j);
-			    	   C.GetCircle().setLayoutY(C.GetCircle().getLayoutY()+s);
+			    	   C.GetCircle().setLayoutY(C.GetCircle().getLayoutY()+BoardSpeed);
  			    	
 			       }
 			       
 			       else if (ScreenElements.get(j) instanceof Magnet) {
 			    	   Magnet M= (Magnet) ScreenElements.get(j);
-			    	   M.GetCircle().setLayoutY(M.GetCircle().getLayoutY()+s);
+			    	   M.GetCircle().setLayoutY(M.GetCircle().getLayoutY()+BoardSpeed);
  			    	
 			       }
 			       
 			       else if (ScreenElements.get(j) instanceof DestroyBlock) {
 			    	   DestroyBlock D= (DestroyBlock) ScreenElements.get(j);
-			    	   D.GetCircle().setLayoutY(D.GetCircle().getLayoutY()+s);
+			    	   D.GetCircle().setLayoutY(D.GetCircle().getLayoutY()+BoardSpeed);
  			    	
 			       }
 
 			       else if (ScreenElements.get(j) instanceof Shield) {
 			    	   Shield S= (Shield) ScreenElements.get(j);
-			    	   S.GetCircle().setLayoutY(S.GetCircle().getLayoutY()+s);
+			    	   S.GetCircle().setLayoutY(S.GetCircle().getLayoutY()+BoardSpeed);
  			    	
 			       }
 			       
 			       else if (ScreenElements.get(j) instanceof Wall) {
 			    	   Wall W= (Wall) ScreenElements.get(j);
-			    	   W.GetRec().setLayoutY(W.GetRec().getLayoutY()+s);
+			    	   W.GetRec().setLayoutY(W.GetRec().getLayoutY()+BoardSpeed);
  			    	
 			       }
 			       
-			       
+				}   
 			}
 		}
 	
@@ -234,16 +387,6 @@ public static void moveBoard() {
 						i=5;
 						}
 				}
-				
-//			if (ScreenElements.size()!=0 && ScreenElements.size()%5==0) {
-//				for (int x=0;x<=4;x++) {
-//					ScreenElements.add(null);
-//				}
-//			}
-//				
-//			while(ScreenElements.size()%5!=0 ) {
-//				ScreenElements.add(null);
-//			}
 
 			for (int x=0;x<=4;x++) {
 				Screen[x][j]=null;
@@ -305,6 +448,7 @@ public static void moveBoard() {
 			
 			DestroyBlock D= new DestroyBlock(i,j, DBCircle);
 			Screen[i][j]=D;
+			ScreenElements.add(D);
 			
 	}
 	
@@ -357,7 +501,7 @@ public static void moveBoard() {
 		BlockSquare.setArcHeight(25);
 		BlockSquare.setArcWidth(25);
 
-		int BlockValue=20;
+		int BlockValue=100;
 		Text BlockLabel = new Text(Integer.toString(BlockValue));
 		BlockLabel.setLayoutX(upperleftx+28);
 		BlockLabel.setLayoutY(upperlefty+40);
@@ -396,19 +540,20 @@ public static void moveBoard() {
 		}
 	
 	
-    public static void DrawSnake(Snake S) {
+    public static void DrawSnake(double x, double y,Snake S) {
     	
-		int Cx=175;
-		int Cy=490;
-		int R=10;
+    	S.GetBody().clear();
+		double Cx=x;
+		double Cy=y;
+		double R=8;
 		
 		//add circle head
 		Circle SnakeHead= new Circle(Cx, Cy, R, Color.RED);
 		MainGrid.getChildren().add(SnakeHead);
 		S.GetBody().add(SnakeHead);
 		
-		for (int x=1; x<=S.GetLength(); x++) {
-		Circle  C=new Circle(Cx, Cy +(x*R*2), R, Color.ORANGE);
+		for (int x1=1; x1<=S.GetLength(); x1++) {
+		Circle  C=new Circle(Cx, Cy +(x1*R*2), R, Color.ORANGE);
 		MainGrid.getChildren().add(C);
 		S.GetBody().add(C);
 		

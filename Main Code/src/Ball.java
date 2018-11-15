@@ -8,16 +8,15 @@ public class Ball extends Token {
 	private Text BallText;
 	private int Value;
 	
-	
 	public Ball (int a, int b, Circle C, Text T, int value) {
-		super(a,b,true,0);
+		super(a,b,true,value);
 		BallCircle=C;
 		BallText=T;
 		this.Value=value;
 		
 	}
 	
-	public Ball (int a, int b, Object[][] Screen) {
+	public Ball (int a, int b) {
 		super(a,b,true,0);
 	}
 	
