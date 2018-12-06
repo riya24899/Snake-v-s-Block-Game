@@ -4,6 +4,14 @@ import javafx.scene.text.*;
 
 public class Ball extends Token {
 	
+	/**
+	   *
+	   The class is used to create a circular ball.
+	   The ball has the attribute of value, and a reference to the circle and text label linked with it.
+	   *
+	*/
+	
+	
 	private Circle BallCircle;
 	private Text BallText;
 	private int Value;
@@ -31,7 +39,15 @@ public class Ball extends Token {
 	public Text GetText() {
 		return this.BallText;
 	}
-	
+
+	public int getValue() {
+		return Value;
+	}
+
+	public void setValue(int value) {
+		Value = value;
+	}
+
 	public void SetText(Text T) {
 		this.BallText=T;
 	}

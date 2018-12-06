@@ -1,11 +1,11 @@
 import java.io.IOException;
-
+import java.util.ArrayList;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import javafx.scene.layout.VBox;
 import javafx.geometry.Pos;
@@ -13,13 +13,24 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.geometry.Insets;
-import javafx.event.EventHandler;
-import javafx.event.ActionEvent;
-
 
 public class EntryScreen extends Application {
 	
+	/**
+	   *
+	   The class is used to create the GUI of the home screen.
+	   The home screen has buttons to access the instruction page and leaderboard.
+	   It also had buttons to start a new game or resume a saved game.
+	   *
+	*/
+	
 	public void start(Stage primaryStage) {
+		
+		/**
+		   *
+		 This method creates the static frame of the home screen and adds the functionality to the respective buttons.
+		   *
+		*/
 		
 		Label Heading1= new Label("SNAKE");
 		Heading1.setStyle("-fx-font-size: 5em; ");
@@ -39,14 +50,45 @@ public class EntryScreen extends Application {
 		StartNew.setPrefWidth(330);
 		StartNew.setOnAction( e -> {
 			Board B= new Board();
+			try {
+				B.SerializePlayers(null);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			B.start(primaryStage);
 	    });
-
-		Button Resume= new Button("RESUME");
-		Resume.setStyle("-fx-background-color: #2e2759; -fx-font-size: 3em; ");
-		Resume.setTextFill(Color.WHITE);
-		Resume.setPrefWidth(330);
-
+		
+		Player checker=null;
+		try {
+			Board B=new Board();
+			checker=B.DeserializePlayers();
+		} catch (ClassNotFoundException | IOException e1) {
+			e1.printStackTrace();
+		}
+		
+		Button Resume=null;
+		if(checker!=null) {
+			
+			Resume= new Button("RESUME");
+			Resume.setStyle("-fx-background-color: #2e2759; -fx-font-size: 3em; ");
+			Resume.setTextFill(Color.WHITE);
+			Resume.setPrefWidth(330);
+			Resume.setOnAction( e -> {
+				Board B= new Board();
+				
+				try {
+					Player temp=B.DeserializePlayers();
+					temp.GetSnake().SetBody(new ArrayList<Circle>());
+					B.setPlayer(temp);
+					B.start(primaryStage);
+				} catch (ClassNotFoundException | IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+		    });
+		}	
+			
 		Button Leader= new Button("LEADERBOARD");
 		Leader.setStyle("-fx-background-color: #2e2759; -fx-font-size: 3em; ");
 		Leader.setTextFill(Color.WHITE);
@@ -60,17 +102,32 @@ public class EntryScreen extends Application {
 				e1.printStackTrace();
 			}
 	    });
+		
+		Button Inst= new Button("INSTRUCTIONS");
+		Inst.setStyle("-fx-background-color: #2e2759; -fx-font-size: 3em; ");
+		Inst.setTextFill(Color.WHITE);
+		Inst.setPrefWidth(330);
+		Inst.setOnAction(e -> {
+			Instruction I= new Instruction();
+			I.start(primaryStage);
+		});
+		
 
 		
 		VBox VerticalPane= new VBox();
-		//VerticalPane.setPadding(new Insets(100, 50, 50, 50));
 	    Background Purple = new Background(new BackgroundFill(Color.DARKSLATEBLUE, CornerRadii.EMPTY, Insets.EMPTY));
 	   
 		VerticalPane.setSpacing(20);
 		VerticalPane.setAlignment(Pos.CENTER);
 		VerticalPane.setBackground(Purple);
-		VerticalPane.getChildren().addAll(Heading1, Heading2, Heading3, StartNew, Resume, Leader);
-
+		if (checker!=null) {
+		VerticalPane.getChildren().addAll(Heading1, Heading2, Heading3, StartNew, Resume, Leader, Inst);
+		}
+		
+		if (checker==null) {
+			VerticalPane.getChildren().addAll(Heading1, Heading2, Heading3, StartNew, Leader, Inst);
+		}
+		
 		Scene EntryScene= new Scene(VerticalPane, 350, 600, Color.DARKSLATEBLUE);
 		primaryStage.setResizable(false);
 		primaryStage.setTitle("Snake Vs Block");

@@ -1,5 +1,8 @@
 public class Obstruction {
 
+	/**
+	 * This class is the parent class for Wall/Blocks. It holds the position and enabled status of these elements.
+	 */
 	protected Point Position;
 	protected boolean Enable;
 	

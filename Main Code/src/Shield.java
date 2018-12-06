@@ -1,6 +1,9 @@
 import javafx.scene.shape.Circle;
 
 public class Shield extends Token{
+	/** 
+	 * This class is used to create a shield using an image. 
+	 */
 	
 	private int Time =5;
 	private Circle ShieldCircle;

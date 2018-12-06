@@ -1,5 +1,8 @@
 public class Token {
 
+	/**
+	 * This class is the parent class for all tokens- magnets, shields, balls, etc. It contains their position, value, etc.
+	 */
 	protected Point Position;
 	protected int Value;
 	protected boolean Enable;

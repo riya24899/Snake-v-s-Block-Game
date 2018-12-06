@@ -8,11 +8,14 @@ import javafx.scene.shape.Circle;
 
 public class Snake implements Serializable {
 	
+	/**
+	 * This class keeps track of the current snake's position, score, life status, etc.
+	 */
 	private static final long serialVersionUID = 376L;
-    private int Length;
+    volatile private int Length;
     private int Speed;
     private int Score;
-    private ArrayList<Circle> SnakeBody= new ArrayList<Circle>();
+    transient private ArrayList<Circle> SnakeBody= new ArrayList<Circle>();
     private Point HeadPosition;
     private boolean IsAlive;
  

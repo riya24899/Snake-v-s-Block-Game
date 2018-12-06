@@ -3,10 +3,14 @@ import java.io.*;
 
 public class Player implements Serializable {
 	
+	/**
+	 * This class is used to create the current player and keep track of her snake length, score, etc. 
+	 */
+	
 	private static final long serialVersionUID = 527L;
-	protected int Score;
+	volatile protected int Score;
 	protected Date CurrDate;
-	protected Snake CurrSnake;
+	volatile protected Snake CurrSnake;
  
 	public void SetScore(int S) {
 		 this.Score=S;

@@ -3,6 +3,14 @@ import javafx.scene.text.Text;
 
 public class Block extends Obstruction {
 	
+	/**
+	   *
+	   The class is used to create a rectangular block.
+	   The wall has the attribute of value, and a reference to the rectangle and the text linked with it.
+	   *
+	*/
+	
+	
 	private int value;
 	private Rectangle BlockRec;
 	private Text BlockText;
